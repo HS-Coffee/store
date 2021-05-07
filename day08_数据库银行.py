@@ -204,17 +204,17 @@ def bank_zhuanzhang(send_user,send_userPw,send_to,send_money):
         users = cursor.fetchall()
         if len(users) == 1:
             users = ()
-            sql = "select account from bank where account = %s and password = %s and (money - %s) >= 0"
+            sql = "select account from bank where account = %s and password = %s and money >= %s"
             parame = [send_user, send_userPw,send_money]
             cursor.execute(sql, parame)
             users = cursor.fetchall()
             if len(users)==1 :
                 sql = "update bank set money = (money - %s) where account = %s ;"
                 parame = [send_money,send_user]
-                cursor.execute(sql)
+                cursor.execute(sql,parame)
                 sql = "update bank set money = (money + %s) where account = %s ;"
                 parame = [send_money, send_to]
-                cursor.execute(sql)
+                cursor.execute(sql,parame)
                 con.commit()
                 return 0
             else:
@@ -228,15 +228,15 @@ def bank_zhuanzhang(send_user,send_userPw,send_to,send_money):
 def chaxun():
     user = input("请输入用户ID:")
     passwd = input("请输入用户密码")
-    sql = "select * from bank where account = %s and password = %s ;"
+    sql = "select * from bank where account = %s and password = %s"
     parame = [user,passwd]
-    cursor.execute(sql)
+    cursor.execute(sql,parame)
     users = cursor.fetchall()
     if len(users)!=0:
         print("* * * * * * * * * * * * * * * * *")
-        print("当前帐号:",users[1],",用户名:",users[2],", 密码:",users[3],", 余额:",users[8],"元, 用户居住地址:",
-                users[4]+users[5]+users[6]+users[7],
-                ", 当前开户行为:",users[9])
+        print("当前帐号:",users[0][0],",用户名:",users[0][1],", 密码:",users[0][2],", 余额:",users[0][7],"元, 用户居住地址:",
+                users[0][3]+users[0][4]+users[0][5]+users[0][6],
+                ", 当前开户行为:",users[0][8])  # (())
         print("* * * * * * * * * * * * * * * * *")
     else:
         print("帐号或密码错误")
